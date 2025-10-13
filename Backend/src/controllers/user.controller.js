@@ -1,8 +1,9 @@
 const userModel = require("../models/user.model");
 const userService = require("../services/user.service");
 const { validationResult } = require("express-validator");
+const blacklistTokenSchema = require("../models/blacklistToken.model");
 
-async function registerUser(req, res) {
+async function registerUser(req, res, next) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -29,7 +30,7 @@ async function registerUser(req, res) {
   res.status(201).json({ token, user });
 }
 
-async function loginUser(req, res) {
+async function loginUser(req, res, next) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -52,7 +53,23 @@ async function loginUser(req, res) {
 
   const token = user.generateAuthToken();
 
+  res.cookie("token", token);
+
   res.status(200).json({ token, user });
 }
 
-module.exports = { registerUser, loginUser };
+async function getUserProfile(req, res, next) {
+  res.status(200).json(req.user);
+}
+
+async function logoutUser(req, res, next) {
+  res.clearCookie("token");
+
+  const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+
+  await blacklistTokenSchema.create({ token });
+
+  return res.status(200).json({ message: "Logged out" });
+}
+
+module.exports = { registerUser, loginUser, getUserProfile, logoutUser };
