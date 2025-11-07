@@ -34,7 +34,9 @@ const CaptainSignup = () => {
             src="https://toppng.com/uploads/preview/uber-logo-png-uber-logo-2018-11563110096yltfjpzwbm.png"
             alt=""
           />
-          <h3 className="text-lg font-medium mb-3">What's your name</h3>
+          <h3 className="text-lg font-medium mb-3">
+            What's our captain's name
+          </h3>
           <div className="flex gap-1 mb-7">
             <input
               className="bg-[#eeeeee] rounded w-1/2 text-lg placeholder:text-base px-4 py-2 border"
